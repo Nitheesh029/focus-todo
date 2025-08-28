@@ -1,3 +1,6 @@
+import { Menu, ArrowRight } from "lucide-react";
+import { useState } from "react";
+
 const NavBar = () => {
   const menus = [
     {
@@ -16,6 +19,12 @@ const NavBar = () => {
       url: "stats",
     },
   ];
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handelMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
   return (
     <nav className="rounded-lg bg-white shadow-lg">
       <div className="mx-auto max-w-6xl px-6">
@@ -40,8 +49,38 @@ const NavBar = () => {
               </a>
             ))}
           </div>
+          <div
+            className="block md:hidden text-black rounded-full p-2 hover:bg-gray-100 cursor-pointer"
+            onClick={handelMenu}
+          >
+            <Menu size={20} />
+          </div>
         </div>
       </div>
+      {isMenuOpen && (
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex flex-col items-left gap-y-2 py-2">
+            {menus.map((menu) => (
+              <a
+                key={menu.id}
+                className={`flex justify-between border-t-2 border-gray-200 p-2 hover:bg-blue-600 hover:text-white cursor-pointer
+                transition-colors ${
+                  (menu.url === "/" && location.pathname === "/") ||
+                  (menu.url !== "/" && location.pathname.includes(menu.url))
+                    ? "bg-blue-600 text-white"
+                    : ""
+                }`}
+                href={menu.url}
+              >
+                <span>{menu.title}</span>
+                <span className="opacity-60">
+                  <ArrowRight />
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
