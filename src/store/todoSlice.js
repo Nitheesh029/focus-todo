@@ -9,20 +9,6 @@ const initialState = [
     priority: 0,
     createdAt: new Date().toISOString(),
   },
-  {
-    id: 2,
-    todo: "Learn web dev",
-    completed: true,
-    priority: 0,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    todo: "Learn aptitude",
-    completed: true,
-    priority: 0,
-    createdAt: new Date().toISOString(),
-  },
 ];
 
 export const todoSlice = createSlice({
@@ -30,11 +16,12 @@ export const todoSlice = createSlice({
   initialState,
   reducers: {
     addTodo: (state, action) => {
+      const { todo, priority } = action.payload;
       const newTodo = {
         id: uuidv4(),
-        todo: action.payload,
+        todo,
         completed: false,
-        priority: 0,
+        priority,
         createdAt: new Date().toISOString(),
       };
       state.push(newTodo);
