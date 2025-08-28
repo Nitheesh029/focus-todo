@@ -32,12 +32,12 @@ export const todoSlice = createSlice({
     addTodo: (state, action) => {
       const newTodo = {
         id: uuidv4(),
-        ...action.payload,
+        todo: action.payload,
         completed: false,
         priority: 0,
         createdAt: new Date().toISOString(),
       };
-      state.todos.push(newTodo);
+      state.push(newTodo);
     },
     updateTodo: (state, action) => {
       const index = state.todos.findIndex((todo) => todo.id === action.payload);

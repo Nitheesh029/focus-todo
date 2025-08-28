@@ -2,12 +2,10 @@ import React from "react";
 import { Card, Statistic } from "antd";
 import { ClockAlert, ClipboardCheck, CircleCheckBig } from "lucide-react";
 import { useSelector } from "react-redux";
-import { StatsCard } from "../components";
+import { StatsCard, TodoForm } from "../components";
 
 const ManageTodo = () => {
-  const todos = useSelector((state) => {
-    return state.todos?.todos || state.todos || state.tasks || [];
-  });
+  const todos = useSelector((state) => state.todos || []);
 
   const completedTodo = (todos || []).filter(
     (todo) => todo.completedTodo === true
@@ -48,8 +46,8 @@ const ManageTodo = () => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-left">
               Todo Management
             </h2>
-            <div className="text-gray-600 text-left">
-              Your todo management interface will go here...
+            <div className="flex flex-col p-3">
+              <TodoForm />
             </div>
           </Card>
         </div>
