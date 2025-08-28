@@ -9,6 +9,20 @@ const initialState = [
     priority: 0,
     createdAt: new Date().toISOString(),
   },
+  {
+    id: 2,
+    todo: "Learn web dev",
+    completed: true,
+    priority: 0,
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    todo: "Learn aptitude",
+    completed: true,
+    priority: 0,
+    createdAt: new Date().toISOString(),
+  },
 ];
 
 export const todoSlice = createSlice({
