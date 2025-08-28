@@ -3,7 +3,7 @@ import { act } from "react";
 import { v4 as uuidv4 } from "uuid";
 const initialState = [
   {
-    id: 1,
+    id: "312315fadgfgsdgasdfg",
     todo: "Learn DSA",
     completed: false,
     priority: 0,
@@ -27,22 +27,19 @@ export const todoSlice = createSlice({
       state.push(newTodo);
     },
     updateTodo: (state, action) => {
-      const index = state.todos.findIndex((todo) => todo.id === action.payload);
+      const { id, todo: newText } = action.payload;
+      const index = state.findIndex((t) => String(t.id) === String(id));
       if (index >= 0) {
-        const existingTodo = state.todos[index];
-        state.todos[index] = {
-          ...existingTodo,
-          ...action.payload,
-          id: existingTodo.id,
-          createdAt: existingTodo.createdAt,
-        };
+        state[index].todo = newText;
       }
     },
     deleteTodo: (state, action) => {
-      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
+      const { id } = action.payload;
+      return state.filter((t) => String(t.id) !== String(id));
     },
     toggleCompleted: (state, action) => {
-      const todo = state.todos.find((todo) => todo.id === action.payload);
+      const { id } = action.payload;
+      const todo = state.find((t) => String(t.id) === String(id));
       if (todo) {
         todo.completed = !todo.completed;
       }

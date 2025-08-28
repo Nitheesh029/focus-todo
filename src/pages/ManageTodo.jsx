@@ -48,12 +48,13 @@ const ManageTodo = () => {
             </h2>
             <div className="flex flex-col p-3">
               <TodoForm />
-              <div className="w-full mt-2 flex flex-col gap-3">
+              <div className="w-full mt-2 flex flex-col gap-3 max-h-[300px] overflow-y-auto">
                 {todos.map((todo) => (
                   <TodoItems
                     key={todo.id}
                     title={todo.todo}
                     priority={todo.priority}
+                    id={todo.id}
                   />
                 ))}
               </div>

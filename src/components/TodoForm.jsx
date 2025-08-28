@@ -14,6 +14,7 @@ const TodoForm = () => {
     if (input.trim()) {
       dispatch(addTodo({ todo: input, priority: priority }));
       setInput("");
+      setPriority(0);
       console.log(todos);
     }
   };
