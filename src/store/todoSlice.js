@@ -1,15 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { act } from "react";
 import { v4 as uuidv4 } from "uuid";
-const initialState = [
-  {
-    id: "312315fadgfgsdgasdfg",
-    todo: "Learn DSA",
-    completed: false,
-    priority: 0,
-    createdAt: new Date().toISOString(),
-  },
-];
+import { getFromLocalStorage } from "../utils/localStorage";
+const initialState = getFromLocalStorage() || [];
 
 export const todoSlice = createSlice({
   name: "todos",
