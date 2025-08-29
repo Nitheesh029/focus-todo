@@ -7,9 +7,7 @@ import { StatsCard, TodoForm, TodoItems } from "../components";
 const ManageTodo = () => {
   const todos = useSelector((state) => state.todos || []);
 
-  const completedTodo = (todos || []).filter(
-    (todo) => todo.completedTodo === true
-  ).length;
+  const completedTodo = todos.filter((todo) => todo.completed !== false).length;
 
   const totalTasks = todos.length;
   const pendingTasks = totalTasks - completedTodo;
@@ -55,6 +53,7 @@ const ManageTodo = () => {
                     title={todo.todo}
                     priority={todo.priority}
                     id={todo.id}
+                    completed={todo.completed}
                   />
                 ))}
               </div>

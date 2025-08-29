@@ -5,12 +5,12 @@ const NavBar = () => {
   const menus = [
     {
       id: 1,
-      title: "Manage Todo",
+      title: "Dashboard",
       url: "/",
     },
     {
       id: 2,
-      title: "Completed",
+      title: "All Tasks",
       url: "completed",
     },
     {
@@ -32,7 +32,7 @@ const NavBar = () => {
           {/* Logo */}
           <div className="flex items-center space-x-2">
             <img src="todo.svg" alt="" className="w-8 h-8" />
-            <span className="text-xl font-bold text-gray-900">FocusTodo</span>
+            <span className="text-2xl font-bold text-gray-900">FocusTodo</span>
           </div>
           {/* Navigation Link */}
           <div className="hidden md:flex items-center space-x-8">
