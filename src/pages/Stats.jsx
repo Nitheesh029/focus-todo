@@ -1,13 +1,27 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { Calendar, CheckCircle, Clock, TrendingUp } from "lucide-react";
+import { Pie, Bar } from "react-chartjs-2";
 import {
-  Calendar,
-  CheckCircle,
-  Clock,
-  TrendingUp,
-  AlertCircle,
-  Target,
-} from "lucide-react";
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+} from "chart.js";
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title
+);
 
 const Stats = () => {
   const todos = useSelector((state) => state.todos);
@@ -52,13 +66,34 @@ const Stats = () => {
     };
   }, [todos]);
 
+  // Chart Data
+  const priorityData = {
+    labels: Object.keys(stats.priorityStats),
+    datasets: [
+      {
+        data: Object.values(stats.priorityStats),
+        backgroundColor: ["#f87171", "#fbbf24", "#34d399", "#9ca3af"], // Red, Yellow, Green, Gray
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const taskStatusData = {
+    labels: ["Completed", "Pending"],
+    datasets: [
+      {
+        label: "Tasks",
+        data: [stats.completed, stats.pending],
+        backgroundColor: ["#22c55e", "#eab308"], // Green, Yellow
+      },
+    ],
+  };
+
   const statCards = [
     {
       title: "Total Tasks",
       value: stats.total,
       icon: Calendar,
-      color: "blue",
-      bgColor: "from-blue-50 to-blue-100",
       iconBg: "bg-blue-100",
       iconColor: "text-blue-600",
       borderColor: "border-blue-500",
@@ -67,8 +102,6 @@ const Stats = () => {
       title: "Completed",
       value: stats.completed,
       icon: CheckCircle,
-      color: "green",
-      bgColor: "from-green-50 to-green-100",
       iconBg: "bg-green-100",
       iconColor: "text-green-600",
       borderColor: "border-green-500",
@@ -77,8 +110,6 @@ const Stats = () => {
       title: "Pending",
       value: stats.pending,
       icon: Clock,
-      color: "yellow",
-      bgColor: "from-yellow-50 to-yellow-100",
       iconBg: "bg-yellow-100",
       iconColor: "text-yellow-600",
       borderColor: "border-yellow-500",
@@ -87,31 +118,9 @@ const Stats = () => {
       title: "Completion Rate",
       value: `${stats.completionRate}%`,
       icon: TrendingUp,
-      color: "purple",
-      bgColor: "from-purple-50 to-purple-100",
       iconBg: "bg-purple-100",
       iconColor: "text-purple-600",
       borderColor: "border-purple-500",
-    },
-    {
-      title: "This Week",
-      value: stats.weeklyTodos,
-      icon: Target,
-      color: "indigo",
-      bgColor: "from-indigo-50 to-indigo-100",
-      iconBg: "bg-indigo-100",
-      iconColor: "text-indigo-600",
-      borderColor: "border-indigo-500",
-    },
-    {
-      title: "This Month",
-      value: stats.monthlyTodos,
-      icon: AlertCircle,
-      color: "pink",
-      bgColor: "from-pink-50 to-pink-100",
-      iconBg: "bg-pink-100",
-      iconColor: "text-pink-600",
-      borderColor: "border-pink-500",
     },
   ];
 
@@ -129,7 +138,7 @@ const Stats = () => {
         </div>
 
         {/* Main Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {statCards.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
@@ -156,9 +165,9 @@ const Stats = () => {
         </div>
 
         {/* Priority Breakdown */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Priority Breakdown
+            Priority Overview
           </h2>
 
           {Object.keys(stats.priorityStats).length > 0 ? (
@@ -166,74 +175,87 @@ const Stats = () => {
               {Object.entries(stats.priorityStats).map(([priority, count]) => {
                 const priorityColors = {
                   High: {
-                    bg: "bg-red-100",
-                    text: "text-red-800",
-                    border: "border-red-200",
+                    bg: "bg-red-50",
+                    text: "text-red-700",
+                    accent: "text-red-600",
                   },
                   Medium: {
-                    bg: "bg-yellow-100",
-                    text: "text-yellow-800",
-                    border: "border-yellow-200",
+                    bg: "bg-yellow-50",
+                    text: "text-yellow-700",
+                    accent: "text-yellow-600",
                   },
                   Low: {
-                    bg: "bg-green-100",
-                    text: "text-green-800",
-                    border: "border-green-200",
+                    bg: "bg-green-50",
+                    text: "text-green-700",
+                    accent: "text-green-600",
                   },
                 };
 
                 const colors = priorityColors[priority] || {
-                  bg: "bg-gray-100",
-                  text: "text-gray-800",
-                  border: "border-gray-200",
+                  bg: "bg-gray-50",
+                  text: "text-gray-700",
+                  accent: "text-gray-600",
                 };
 
                 return (
                   <div
                     key={priority}
-                    className={`${colors.bg} ${colors.border} border rounded-lg p-4 text-center`}
+                    className={`${colors.bg} rounded-lg p-6 text-center`}
                   >
-                    <h3 className={`font-semibold ${colors.text} mb-2`}>
+                    <h3
+                      className={`font-medium ${colors.text} mb-2 text-sm uppercase tracking-wide`}
+                    >
                       {priority} Priority
                     </h3>
-                    <p className={`text-2xl font-bold ${colors.text}`}>
+                    <p className={`text-3xl font-bold ${colors.accent} mb-1`}>
                       {count}
                     </p>
-                    <p className="text-sm text-gray-600">tasks</p>
+                    <p className="text-sm text-gray-500">
+                      {count === 1 ? "task" : "tasks"}
+                    </p>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-500 text-lg">No tasks available yet</p>
-              <p className="text-gray-400 text-sm mt-2">
-                Create some tasks to see priority breakdown
+            <div className="text-center py-12">
+              <div className="mb-4">
+                <Calendar className="h-12 w-12 text-gray-300 mx-auto" />
+              </div>
+              <p className="text-gray-500 text-lg mb-2">
+                No tasks available yet
+              </p>
+              <p className="text-gray-400 text-sm">
+                Create some tasks to see your priority breakdown
               </p>
             </div>
           )}
         </div>
 
-        {/* Summary Card */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-          <h2 className="text-2xl font-bold mb-4">Summary</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-3xl font-bold">{stats.completionRate}%</p>
-              <p className="text-blue-100 text-sm">Overall Progress</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold">{stats.weeklyTodos}</p>
-              <p className="text-blue-100 text-sm">Tasks This Week</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold">{stats.mostCommonPriority}</p>
-              <p className="text-blue-100 text-sm">Most Common Priority</p>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold">{stats.pending}</p>
-              <p className="text-blue-100 text-sm">Tasks Remaining</p>
-            </div>
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+          {/* Priority Pie Chart */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Priority Distribution
+            </h2>
+            {Object.keys(stats.priorityStats).length > 0 ? (
+              <Pie data={priorityData} />
+            ) : (
+              <p className="text-gray-500 text-center">No data available</p>
+            )}
+          </div>
+
+          {/* Completed vs Pending Bar Chart */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">
+              Task Status
+            </h2>
+            {stats.total > 0 ? (
+              <Bar data={taskStatusData} />
+            ) : (
+              <p className="text-gray-500 text-center">No data available</p>
+            )}
           </div>
         </div>
       </div>
