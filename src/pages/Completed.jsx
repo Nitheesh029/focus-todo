@@ -1,12 +1,30 @@
-import { useSelector } from "react-redux";
-import { Filter, ArrowUpDown, Plus } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { Filter, ArrowUpDown, Plus, Trash2, Trash } from "lucide-react";
 import { TodoItems } from "../components";
+import { deleteAll } from "../store/todoSlice";
+import { message, Popconfirm } from "antd";
+import { useEffect, useState } from "react";
 const Completed = () => {
   const todos = useSelector((state) => state.todos || []);
+  const [disableOptions, setDisableOptions] = useState(true);
+
+  useEffect(() => {
+    setDisableOptions(todos.length === 0);
+  }, [todos.length]);
 
   const completedTodo = todos.filter((todo) => todo.completed !== false);
   const pendingTodo = todos.filter((todo) => todo.completed === false);
 
+  const confirm = (e) => {
+    dispatch(deleteAll());
+    message.success("Deleted Successfully!");
+  };
+  const cancel = (e) => {
+    console.log(e);
+    message.error("Click on No");
+  };
+
+  const dispatch = useDispatch();
   return (
     <div className="mt-10 w-[100%] md:max-w-7xl mx-auto p-6">
       <div className="space-y-6">
@@ -18,21 +36,40 @@ const Completed = () => {
         {/* Filter and Sort Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center justify-between">
           <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium cursor-pointer"
+              disabled={disableOptions}
+            >
               <Filter size={18} />
-              Filter
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium">
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-medium cursor-pointer"
+              disabled={disableOptions}
+            >
               <ArrowUpDown size={18} />
-              Sort
             </button>
             <a
               href="/"
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium cursor-pointer"
             >
               <Plus size={18} />
-              Add More
             </a>
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this task?"
+              onConfirm={confirm}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+              disabled={disableOptions}
+            >
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium cursor-pointer"
+                disabled={disableOptions}
+              >
+                <Trash size={18} />
+              </button>
+            </Popconfirm>
           </div>
 
           {/* Todo Count */}
